@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style type="text/css">
+		.output{
+			font-weight: bold;
+		}
+		#payment{
+			text-decoration: underline;
+		}
+		#graph{
+			border:solid black 1px;
+		}
+		th,td{
+			vertical-align: top;
+
+
+		}
+	</style>
+
+	<script type="text/javascript">
+		"use strict";
+		function calculate(){
+			var amount =document.getElementById("amount");
+			var apr=document.getElementById("apr");
+			var years=document.getElementById("years");
+			var zipcode=document.getElementById("zipcode");
+			var payment=document.getElementById("payment");
+			var total=document.getElementById("total");
+			var totalinterest=document.getElementById("totalinterest");
+
+			var principal=parseFloat(amount.value);
+			var interset=parseFloat(apr.value);
+			var payments=parseFloat(years.value);
+
+			var x=Math.pow(1+interset,payments);
+			var monthly=(principal*x*interset);
+
+			if(isFinite(monthly)){
+				payment.innerHtml=monthly.toFixed(2);
+				total.innerHtml=(monthly*payments).toFixed(2);
+				save(amount.value,apr.value,years.value,zipcode.value);
+
+				try{
+					getLenders(amount.value,apr.value,years.value,zipcode.value);
+				}catch(e){
+
+				}
+
+				chart(principal,interset,monthly,payments);
+			}
+			else{
+				payment.innerHtml="";
+				total.innerHtml="";
+				totalinterest.innerHtml="";
+				chart();
+			}
+		}
+	</script>
+</head>
+<body>
+<table>
+	<tr>
+		<th>Enter Loan Data:</th>
+		<td></td>
+		<th>Loan Balance.Cumulative Equality,and Interset Payments</th>
+	</tr>
+	<tr><td>Amount of the loan:</td>
+		<td><input id="amount" onchange="calculate()"></td>
+		<td rowspan=8>
+			<canvas id="graph" width="400" height="250"></canvas>
+		</td>
+
+	</tr>
+	<tr><td>Annual interset (%):</td>
+		<td><input id="apr" onchange="calculate()"></td>
+
+	</tr>
+	<tr><td> Repayment period (years):</td>
+		<td><input  id="years" onchange="calculate()"/></td></tr>
+<tr><td> Zipcode (to find lenders):</td>
+<td><input id="zipcode" onchange="calculate()"></td></tr>
+<tr><td>Approximate Payments:</td>
+<td><button onclick="calculate()" value="">Calculate</button></td></tr>
+<tr><td>MOnthly payment:</td>
+<td>$<span class="output" id="payment"></span></td></tr>
+<tr><td>Total Payment:</td>
+<td>$<span class="output" id="totalinterest"></span></td></tr>
+<tr></tr>
+<tr><th>Sponsors:</th>
+<td colspan="2">Apply for your loan with one of these fine lenders:
+<div id="lenders"></div>
+</td></tr>
+<tr><td></td></tr>
+</table>
+</body>
+</html>
